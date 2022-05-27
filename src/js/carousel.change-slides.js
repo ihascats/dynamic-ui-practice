@@ -182,6 +182,30 @@ function carousel() {
       clicked = false;
     }, 1000);
   };
+
+  setInterval(() => {
+    if (clicked) return;
+    const currentSelected = document.querySelector('.selected').classList[0];
+    let nextSelected = Number(currentSelected) + 1;
+    if (nextSelected >= imageArray.length) {
+      nextSelected = 0;
+    }
+    posButtons.forEach((element) => {
+      const button = element;
+      button.classList.remove('selected');
+      if (button.classList.contains(nextSelected)) {
+        button.classList.toggle('selected');
+      }
+    });
+    clicked = true;
+    const images = imageContainer.firstElementChild;
+    images.style.right = 0;
+    setTimeout(() => {
+      position += 1;
+      displayThreeImages(arrayOfImageElements);
+      clicked = false;
+    }, 1000);
+  }, 5000);
 }
 
 export default carousel;
