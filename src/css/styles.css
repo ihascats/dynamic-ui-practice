@@ -145,6 +145,23 @@ a {
 .right {
   width: 50%;
   height: 100%;
+  font-weight: 900;
+  font-size: 24px;
+  color: white;
+  display: grid;
+  align-items: center;
+  cursor: default;
+  user-select: none;
+}
+
+.right {
+  justify-content: end;
+  padding-right: 16px;
+}
+
+.left {
+  justify-content: left;
+  padding-left: 16px;
 }
 
 .slidePosition {
