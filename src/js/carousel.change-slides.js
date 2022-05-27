@@ -9,8 +9,6 @@ function carousel() {
 
   const imageContainer = document.querySelector('.imageDisplay');
 
-  const startingPosition = 800;
-
   function createImage(url) {
     const img = document.createElement('img');
     img.setAttribute('style', 'width: 800px; height: 450px;');
@@ -24,7 +22,7 @@ function carousel() {
     imageElements.forEach((element) => {
       div.appendChild(element);
     });
-    div.setAttribute('style', `right:-${startingPosition}px `);
+    div.setAttribute('style', 'right:-800px ');
     const firstChild = imageContainer.firstElementChild;
     if (firstChild && !firstChild.classList.contains('slideContainer')) {
       imageContainer.firstElementChild.remove();
@@ -85,6 +83,7 @@ function carousel() {
 
   const slidePosition = document.querySelector('.slidePosition');
 
+  // Generate navigation buttons
   imageArray.forEach((item, pos) => {
     const button = document.createElement('button');
     button.classList.add(pos);
@@ -98,40 +97,25 @@ function carousel() {
 
   let clicked = false;
 
-  const leftButton = document.querySelector('.left');
-  const rightButton = document.querySelector('.right');
-
-  rightButton.onclick = () => {
+  function shift(bool = true) {
     if (clicked) return;
     const currentSelected = document.querySelector('.selected').classList[0];
-    let nextSelected = Number(currentSelected) + 1;
+    let direction = 1;
+    if (!bool) {
+      direction = -1;
+    }
+    let nextSelected = Number(currentSelected) + direction;
+
     if (nextSelected >= imageArray.length) {
       nextSelected = 0;
     }
-    posButtons.forEach((element) => {
-      const button = element;
-      button.classList.remove('selected');
-      if (button.classList.contains(nextSelected)) {
-        button.classList.toggle('selected');
-      }
-    });
-    clicked = true;
-    const images = imageContainer.firstElementChild;
-    images.style.right = 0;
-    setTimeout(() => {
-      position += 1;
-      displayThreeImages(arrayOfImageElements);
-      clicked = false;
-    }, 1000);
-  };
 
-  leftButton.onclick = () => {
-    if (clicked) return;
-    const currentSelected = document.querySelector('.selected').classList[0];
-    let nextSelected = Number(currentSelected) - 1;
-    if (nextSelected < 0) {
-      nextSelected = imageArray.length - 2 - nextSelected;
+    if (!bool) {
+      if (nextSelected < 0) {
+        nextSelected = imageArray.length - 2 - nextSelected;
+      }
     }
+
     posButtons.forEach((element) => {
       const button = element;
       button.classList.remove('selected');
@@ -139,17 +123,22 @@ function carousel() {
         button.classList.toggle('selected');
       }
     });
+
     clicked = true;
+    let right = 0;
+    if (!bool) {
+      right = -1600;
+    }
     const images = imageContainer.firstElementChild;
-    images.style.right = `-${1600}px`;
+    images.style.right = `${right}px`; // variable
     setTimeout(() => {
-      position -= 1;
+      position += direction; // variable0
       displayThreeImages(arrayOfImageElements);
       clicked = false;
     }, 1000);
-  };
+  }
 
-  slidePosition.onclick = (event) => {
+  function navigationShift(event) {
     if (clicked) return;
     const button = event.target.closest('button');
     if (!button || button === null) return;
@@ -166,46 +155,44 @@ function carousel() {
     const newPosition =
       800 - arrayOfImageElements.length * 800 + 800 * selectedPosition;
     position = selectedPosition;
+
     posButtons.forEach((element) => {
       element.classList.remove('selected');
       if (element.classList.contains(position)) {
         element.classList.toggle('selected');
       }
     });
+
     const div = imageContainer.firstElementChild;
     div.style.right = `${currentPosition}px`;
     setTimeout(() => {
       div.style.right = `${newPosition}px`;
     });
+
     setTimeout(() => {
       displayThreeImages(arrayOfImageElements);
       clicked = false;
     }, 1000);
-  };
+  }
+
+  const leftButton = document.querySelector('.left');
+  const rightButton = document.querySelector('.right');
 
   setInterval(() => {
-    if (clicked) return;
-    const currentSelected = document.querySelector('.selected').classList[0];
-    let nextSelected = Number(currentSelected) + 1;
-    if (nextSelected >= imageArray.length) {
-      nextSelected = 0;
-    }
-    posButtons.forEach((element) => {
-      const button = element;
-      button.classList.remove('selected');
-      if (button.classList.contains(nextSelected)) {
-        button.classList.toggle('selected');
-      }
-    });
-    clicked = true;
-    const images = imageContainer.firstElementChild;
-    images.style.right = 0;
-    setTimeout(() => {
-      position += 1;
-      displayThreeImages(arrayOfImageElements);
-      clicked = false;
-    }, 1000);
+    shift();
   }, 5000);
+
+  rightButton.onclick = () => {
+    shift();
+  };
+
+  leftButton.onclick = () => {
+    shift(false);
+  };
+
+  slidePosition.onclick = (event) => {
+    navigationShift(event);
+  };
 }
 
 export default carousel;
